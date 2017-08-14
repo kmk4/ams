@@ -5,7 +5,7 @@
 @endsection
   
 @section('selected_menu')
-          ادارة النماذج والقطاعات
+         ادارة القطاعات والتمركزات
 @endsection
   
 
@@ -131,7 +131,7 @@ function LoadModels() {
   }
 };
 	ClearOption ("s_model");
-	addoption ("s_model",null,"Loading ..",true );
+	addOption ("s_model",null,"Loading ..",true );
 	xhttp.open("GET", y, true);
 	xhttp.send(); 
 	
