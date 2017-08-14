@@ -30,7 +30,7 @@
 		<div class="col-sm-4" style="background-color: #b9bef7">
 		<br>
 				<label>
-				<select name="region" id="region" onchange='LoadModels()'>
+				<select name="region" id="region" onchange='LoadModels()' style="width: 250px">
 					<option selected> اخنر الاقاليم </option>
 					@foreach ($Regions as $Region)
 					
@@ -44,7 +44,7 @@
 <br>
 
  <label>
-    <select name="s_model" id="s_model" onchange='LoadSectors()'>
+    <select name="s_model" id="s_model" onchange='LoadSectors()'style="width: 250px">
         <option selected> اخنر الاقاليم </option>
 		
 
@@ -55,7 +55,7 @@
 <br>
 
 <label>
-    <select name="s_model" id="sector" onchange='LoadBranches()' >
+    <select name="s_model" id="sector" onchange='LoadBranches()' style="width: 250px">
         <option selected> اختر القطاع </option>
 		
 
@@ -130,11 +130,12 @@ function LoadModels() {
 			
   }
 };
+	ClearOption ("s_model");
+	addoption ("s_model",null,"Loading ..",true );
 	xhttp.open("GET", y, true);
 	xhttp.send(); 
 	
-	ClearOption ("s_model");
-	addoption ("s_model",0,"Loading ..",true );
+
 	//alert ("loading...");
 
 
@@ -160,11 +161,6 @@ function ClearOption (Select_ID){
 
 
 
-function LoadSectorsooo() {
-	 var x = document.getElementById("s_model");
-	 alert (x.value);
-	
-}
 
 
 
@@ -193,11 +189,13 @@ function LoadSectors() {
 			
   }
 };
+
+	ClearOption ("sector");
+	addOption ("sector",0,"Loading ..",true );
+	
 	xhttp.open("GET", y, true);
 	xhttp.send(); 
 	
-	ClearOption ("sector");
-	addOption ("sector",0,"Loading ..",true );
 	
 
 
