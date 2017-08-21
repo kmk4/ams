@@ -19,16 +19,71 @@
   @endsection
   
   @section('content')
+		
+
+		  <!-- Modal content -->
+		        <div class="modal fade" id="sector_data" tabindex="-1" role="dialog" aria-labelledby="contactLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="panel-title" id="contactLabel"><span class="glyphicon glyphicon-info-sign"></span> Any questions? Feel free to contact us.</h4>
+                    </div>
+                    <form action="#" method="post" accept-charset="utf-8">
+                    <div class="modal-body" style="padding: 5px;">
+                         
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 10px;">
+                                    <input class="form-control" id="sector_display" placeholder="E-mail" type="text"  disabled value="قطاع وسط" />
+									
+									<input class="form-control" name="model_id"  type="hidden" required />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 10px;">
+                                    <input class="form-control" name="name" placeholder="اسم القطاع" type="text" required />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <textarea style="resize:vertical;" class="form-control" placeholder="العنوان .." rows="6" name="address" id="sector_address" required></textarea>
+                                </div>
+                            </div>
+                        </div>  
+                        <div class="panel-footer" style="margin-bottom:-14px;">
+                            <input type="submit" class="btn btn-success" value="حفظ"/>
+                                <!--<span class="glyphicon glyphicon-ok"></span>-->
+                            <input type="reset" class="btn btn-danger" value="مسح الكل" />
+                                <!--<span class="glyphicon glyphicon-remove"></span>-->
+                            <button style="float: right;" type="button" class="btn btn-default btn-close" data-dismiss="modal">اغلاق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		
+		    <!--end model code-->
+
+
+
+
+
+
+		<div class="alert alert-success">
+                    <strong>Well done!</strong> You successfully read this important alert message.
+                </div>		
+
   <div class="container" >
   <div class="row" >
 		
-		<div class="col-sm-4">
-		</div>
-
-		<div class="col-sm-2">
-		</div>
-		<div class="col-sm-4" style="background-color: #b9bef7">
-		<br>
+		<div class="col-sm-4" >
+	
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+									<h3 class="panel-title"><strong>الاقاليم والنماذج</strong></h3>
+								</div>
+								<div class="panel-body">
+												<br>
 				<label>
 				<select name="region" id="region" onchange='LoadModels()' style="width: 250px">
 					<option selected> اخنر الاقاليم </option>
@@ -65,6 +120,37 @@
 </label>
 <strong>القطاعات</strong>
 <br><br>
+								</div>
+							</div>
+		
+		</div>
+
+		<div class="col-sm-2">
+		</div>
+		<div class="col-sm-4" >
+	<div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><strong>القطاعات</strong></h3>
+                            </div>
+                            <div class="panel-body">
+                               اسم القطاع
+							   <br>
+							   <button type="button" class="btn btn btn-primary"> تعديل بيانات القطاع</button>
+							   
+							   <button type="button" id="myBtn" class="btn btn btn-success" data-toggle="modal" data-target="#sector_data">اضافة قطاع جديد </button>
+                            </div>
+                        </div>
+	<div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><strong>الفروع والتمركزات</strong></h3>
+                            </div>
+                            <div class="panel-body">
+                                  <button type="button" class="btn btn btn-success">اضافة فرع/تمركز جديد</button>
+                            </div>
+                        </div>
+											
+						
+						
 </div>
 
 
@@ -105,6 +191,46 @@
                     </div>
 					
 	</div>
+	
+	
+	
+
+
+
+
+
+<script>
+
+$(document).ready(function() {
+    var panels = $('.vote-results');
+    var panelsButton = $('.dropdown-results');
+    panels.hide();
+
+    //Click dropdown
+    panelsButton.click(function() {
+        //get data-for attribute
+        var dataFor = $(this).attr('data-for');
+        var idFor = $(dataFor);
+
+        //current button
+        var currentButton = $(this);
+        idFor.slideToggle(400, function() {
+            //Completed slidetoggle
+            if(idFor.is(':visible'))
+            {
+                currentButton.html('Hide Results');
+            }
+            else
+            {
+                currentButton.html('View Results');
+            }
+        })
+    });
+});
+</script>
+
+
+
 <script>
 function LoadModels() {
 	var x = document.getElementById("region").value;

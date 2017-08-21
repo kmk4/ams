@@ -24,8 +24,6 @@
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-	 <link rel="stylesheet" type="text/css" href="/vendor/tcg/voyager/assets/css/style.css">
-	
 	
 	 <link href="css/select-style.css" rel="stylesheet">
 

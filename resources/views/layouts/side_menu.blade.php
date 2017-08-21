@@ -19,7 +19,7 @@
 							<ul id="mnu_{{$menu_item->id}}" class="collapse">
 						
 							
-								@foreach ($submenu as $item)
+								@foreach ($submenu->sortBy('order') as $item)
 								
 									<li> <a href="{{$item->url}}"> <i class="{{$item->icon_class}}"></i>
 									{{$item->title}}</a></li>
