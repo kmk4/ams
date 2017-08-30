@@ -22,6 +22,28 @@ class BranchesController extends Controller
 		
 	}
 	
+	public function store (Request $request){
+		
+		
+		
+	}
+	public function ajax_add_sector (Request $request){
+		
+		Sector::create($request->all());
+		return "done";
+	}
+	
+	public function ajax_update_sector (Request $request,$id){
+		$sector=Sector::findOrFail($id);
+		$sector->update($request->all());
+		
+		return "done";
+	}
+	public function ajax_delete_sector ($id){
+		
+		
+	}
+	
 	public function ajax_load_model_by_region_id ($id) {
 		
 		
@@ -33,6 +55,12 @@ class BranchesController extends Controller
 		
 		
 		return Sector::Where('model_id',$id)->get();
+	}
+	
+	public function ajax_load_sectors_by_sector_id ($id) {
+		
+		
+		return Sector::Where('id',$id)->get();
 	}
 	
 	public function ajax_load_branches_by_sector_id ($id) {

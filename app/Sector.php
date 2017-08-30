@@ -7,5 +7,7 @@ use app\branch;
 
 class Sector extends Model
 {
-//
+protected $fillable =[
+	'model_id','name','address'
+];
 }

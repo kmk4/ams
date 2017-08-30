@@ -29,29 +29,32 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                         <h4 class="panel-title" id="contactLabel"><span class="glyphicon glyphicon-info-sign"></span> Any questions? Feel free to contact us.</h4>
                     </div>
-                    <form action="#" method="post" accept-charset="utf-8">
+                    <form action="#" method="post" accept-charset="utf-8" id="frm_add_edit">
                     <div class="modal-body" style="padding: 5px;">
-                         
+					<input type="hidden" id="frm_method" name="_method" value="PUT">
+					
+                         {{csrf_field()}}
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 10px;">
-                                    <input class="form-control" id="sector_display" placeholder="E-mail" type="text"  disabled value="قطاع وسط" />
+                                    <input class="form-control" id="model_display"  type="text"  disabled value="قطاع وسط" />
 									
-									<input class="form-control" name="model_id"  type="hidden" required />
+									<input class="form-control" id="frm_model_id" name="model_id"  value ="" type="hidden"  />
+									<input class="form-control" id="frm_sector_id" name="sector_id"  value ="" type="hidden"  />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom: 10px;">
-                                    <input class="form-control" name="name" placeholder="اسم القطاع" type="text" required />
+                                    <input class="form-control" id="frm_sector_name" name="name" placeholder="اسم القطاع" type="text" required />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <textarea style="resize:vertical;" class="form-control" placeholder="العنوان .." rows="6" name="address" id="sector_address" required></textarea>
+                                    <textarea style="resize:vertical;" class="form-control" placeholder="العنوان .." rows="6" name="address" id="frm_sector_address" ></textarea>
                                 </div>
                             </div>
                         </div>  
                         <div class="panel-footer" style="margin-bottom:-14px;">
-                            <input type="submit" class="btn btn-success" value="حفظ"/>
+                            <input type="submit" class="btn btn-success" value="حفظ" />
                                 <!--<span class="glyphicon glyphicon-ok"></span>-->
                             <input type="reset" class="btn btn-danger" value="مسح الكل" />
                                 <!--<span class="glyphicon glyphicon-remove"></span>-->
@@ -86,7 +89,7 @@
 												<br>
 				<label>
 				<select name="region" id="region" onchange='LoadModels()' style="width: 250px">
-					<option selected> اخنر الاقاليم </option>
+					<option selected value="0" > اخنر الاقاليم </option>
 					@foreach ($Regions as $Region)
 					
 					 <option   value="{{ $Region->id }}" >{{ $Region->name }}</option>
@@ -100,7 +103,7 @@
 
  <label>
     <select name="s_model" id="s_model" onchange='LoadSectors()'style="width: 250px">
-        <option selected> اخنر الاقاليم </option>
+        <option value="No" selected> اخنر الاقاليم </option>
 		
 
         
@@ -111,7 +114,7 @@
 
 <label>
     <select name="s_model" id="sector" onchange='LoadBranches()' style="width: 250px">
-        <option selected> اختر القطاع </option>
+        <option value="No" selected> اختر القطاع </option>
 		
 
         
@@ -135,9 +138,9 @@
                             <div class="panel-body">
                                اسم القطاع
 							   <br>
-							   <button type="button" class="btn btn btn-primary"> تعديل بيانات القطاع</button>
+							   <button type="button" class="btn btn btn-primary"onclick="LoadAddEditSectorForm('edit')"> تعديل بيانات القطاع</button>
 							   
-							   <button type="button" id="myBtn" class="btn btn btn-success" data-toggle="modal" data-target="#sector_data">اضافة قطاع جديد </button>
+							   <button type="button" id="myBtn" class="btn btn btn-success" onclick="LoadAddEditSectorForm('add')"  >اضافة قطاع جديد </button>
                             </div>
                         </div>
 	<div class="panel panel-primary">
@@ -232,6 +235,80 @@ $(document).ready(function() {
 
 
 <script>
+
+function LoadAddEditSectorForm (action){
+	//alert ("here");
+	var yyy = document.getElementById("s_model");
+	var ttt = document.getElementById("sector");
+	
+		// After choosing the model prepare for sector add
+		if ( yyy[yyy.selectedIndex].value=="No"){
+			alert("الرجاء اختيار النموذج/المحافظة");
+			
+		}else{
+			
+			
+				 //document.getElementById("model_id").value = document.getElementById("s_model").value;
+				 document.getElementById("frm_model_id").value = yyy[yyy.selectedIndex].value;
+				 document.getElementById("model_display").value = yyy[yyy.selectedIndex].text;
+				 // selected sectors
+				 var seccho=ttt[ttt.selectedIndex].value
+				
+				 
+					 if (action=="add") {
+						 
+					  document.getElementById("frm_method").value="Post" ;
+					  document.getElementById("frm_sector_name").value="" ;
+					  document.getElementById("frm_sector_address").value="" ;
+					  document.getElementById("frm_add_edit").action="/branche/ajax_add_sector" ;
+					  
+					  $('#sector_data').modal();
+					 }else{
+						 
+							if (seccho=="No"){
+								alert("الرجاء اختيار القطاع المراد تعديله");
+							}else{
+								// edit sector_id
+										var y = window.location.href + "/" + seccho + "/ajax_load_sectors_by_sector_id/";
+										
+										var xhttp = new XMLHttpRequest();
+										
+										xhttp.onreadystatechange = function() {
+										if (this.readyState == 4 && this.status == 200) {
+											
+										var  RespObj = JSON.parse(this.responseText)
+										document.getElementById("frm_add_edit").action="/branche/"+seccho+"/ajax_update_sector" ;
+										 document.getElementById("frm_method").value="Put" ;
+										document.getElementById("frm_sector_id").value=seccho ;
+										document.getElementById("frm_sector_name").value=RespObj[0].name ;
+										document.getElementById("frm_sector_address").value=RespObj[0].address  ; 	
+										$('#sector_data').modal();
+
+												
+									  }
+									};
+										xhttp.open("GET", y, true);
+										xhttp.send(); 
+							//	$('#sector_data').modal();
+								
+								
+								
+								//
+								
+							}
+						
+					 
+						 
+					 }	
+				// document.getElementById("model_display").value = yyy[yyy.selectedIndex].value;
+				//alert ("here");
+				
+				
+		}
+		
+	return false;
+	
+}
 function LoadModels() {
 	var x = document.getElementById("region").value;
 	var y = window.location.href + "/" + x + "/ajax_load_model_by_region_id/";
@@ -244,7 +321,7 @@ function LoadModels() {
 	var  RespObj = JSON.parse(this.responseText)
 	
 	ClearOption ("s_model");
-	addOption ("s_model",null,"اختر النموذج",true );
+	addOption ("s_model","No","اختر النموذج",true );
 	
 	
 	for (x in RespObj) {
@@ -264,7 +341,7 @@ function LoadModels() {
 
 	//alert ("loading...");
 
-
+	
 }
 
 function addOption( Select_ID, item_id, item_name, item_selected) {
@@ -303,7 +380,7 @@ function LoadSectors() {
 	var  RespObj = JSON.parse(this.responseText)
 	
 	ClearOption ("sector");
-	addOption ("sector",null,"اختر القطاع",true );
+	addOption ("sector","No","اختر القطاع",true );
 	
 	
 	for (x in RespObj) {
@@ -311,19 +388,18 @@ function LoadSectors() {
 	  addOption ("sector",RespObj[x].id,RespObj[x].name ,false);
 	} 
 
-		
 			
   }
 };
 
 	ClearOption ("sector");
-	addOption ("sector",0,"Loading ..",true );
+	addOption ("sector","No","Loading ..",true );
 	
 	xhttp.open("GET", y, true);
 	xhttp.send(); 
 	
 	
-
+ 
 
 }
 
