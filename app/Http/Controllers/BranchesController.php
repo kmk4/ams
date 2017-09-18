@@ -40,8 +40,9 @@ class BranchesController extends Controller
 		return "done";
 	}
 	public function ajax_delete_sector ($id){
-		
-		
+		$sector=Sector::findOrFail($id);
+		$sector->delete();
+		return "done";
 	}
 	
 	public function ajax_load_model_by_region_id ($id) {

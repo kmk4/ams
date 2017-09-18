@@ -27,7 +27,7 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="panel-title" id="contactLabel"><span class="glyphicon glyphicon-info-sign"></span> Any questions? Feel free to contact us.</h4>
+                        <h4 class="panel-title" id="contactLabel"><span class="glyphicon glyphicon-info-sign"></span></h4>
                     </div>
                     <form action="#" method="post" accept-charset="utf-8" id="frm_add_edit">
                     <div class="modal-body" style="padding: 5px;">
@@ -54,7 +54,7 @@
                             </div>
                         </div>  
                         <div class="panel-footer" style="margin-bottom:-14px;">
-                            <input type="submit" class="btn btn-success" value="حفظ" />
+                            <input 	onclick="ValidateThenSend()" class="btn btn-success" value="حفظ" />
                                 <!--<span class="glyphicon glyphicon-ok"></span>-->
                             <input type="reset" class="btn btn-danger" value="مسح الكل" />
                                 <!--<span class="glyphicon glyphicon-remove"></span>-->
@@ -138,9 +138,11 @@
                             <div class="panel-body">
                                اسم القطاع
 							   <br>
+							    <button type="button" id="myBtn" class="btn btn btn-danger" onclick="LoadAddEditSectorForm('delete')"  >حذف القطاع </button>
 							   <button type="button" class="btn btn btn-primary"onclick="LoadAddEditSectorForm('edit')"> تعديل بيانات القطاع</button>
 							   
 							   <button type="button" id="myBtn" class="btn btn btn-success" onclick="LoadAddEditSectorForm('add')"  >اضافة قطاع جديد </button>
+							  
                             </div>
                         </div>
 	<div class="panel panel-primary">
@@ -200,7 +202,27 @@
 
 
 
+<script>
 
+	
+	"use strict";
+// ExcuteFunction denote that what function to be excuted after the http request done like LoadSectors or Refresh pages
+function SendForm(Form,ExcuteFunction)
+{
+	var oFormElement = document.getElementById(Form);
+  var xhr = new XMLHttpRequest();
+  xhr.onload = function(){ 
+  alert (xhr.responseText);
+  window[ExcuteFunction]();
+  //LoadSectors();
+  }
+  xhr.open (oFormElement.method, oFormElement.action, true);
+  xhr.send (new FormData (oFormElement));
+  //return false;
+
+	
+}
+</script>
 
 <script>
 
@@ -235,9 +257,27 @@ $(document).ready(function() {
 
 
 <script>
-
+function ValidateThenSend (){
+	frm_action=document.getElementById("frm_method").value;
+	sec_name=document.getElementById("frm_sector_name").value;
+	
+	if (sec_name=="" ){
+		
+		alert ("لا يمكنك الاستمرار وخانة الاسم فارغه");
+	}else{
+		$('#sector_data').modal('hide');
+		SendForm('frm_add_edit','LoadSectors');
+		
+	}
+	//if ((action=='add' || action=='edit') && (document.getElementById("frm_sector_name").value="") )
+	
+	
+	
+	
+}
 function LoadAddEditSectorForm (action){
-	//alert ("here");
+	//action arug either add or edit
+	
 	var yyy = document.getElementById("s_model");
 	var ttt = document.getElementById("sector");
 	
@@ -261,9 +301,10 @@ function LoadAddEditSectorForm (action){
 					  document.getElementById("frm_sector_name").value="" ;
 					  document.getElementById("frm_sector_address").value="" ;
 					  document.getElementById("frm_add_edit").action="/branche/ajax_add_sector" ;
+					  document.getElementById("contactLabel").innerHTML ="اضافة قطاع جديد" ;
 					  
 					  $('#sector_data').modal();
-					 }else{
+					 }else if (action=="edit"){
 						 
 							if (seccho=="No"){
 								alert("الرجاء اختيار القطاع المراد تعديله");
@@ -278,8 +319,9 @@ function LoadAddEditSectorForm (action){
 											
 										var  RespObj = JSON.parse(this.responseText)
 										document.getElementById("frm_add_edit").action="/branche/"+seccho+"/ajax_update_sector" ;
-										 document.getElementById("frm_method").value="Put" ;
+										document.getElementById("frm_method").value="Put" ;
 										document.getElementById("frm_sector_id").value=seccho ;
+										 document.getElementById("contactLabel").innerHTML ="تعديل بيانات قطاع" ;
 										document.getElementById("frm_sector_name").value=RespObj[0].name ;
 										document.getElementById("frm_sector_address").value=RespObj[0].address  ; 	
 										$('#sector_data').modal();
@@ -299,7 +341,48 @@ function LoadAddEditSectorForm (action){
 						
 					 
 						 
-					 }	
+					 }else if (action=="delete"){
+									if (seccho=="No"){
+								alert("الرجاء اختيار القطاع المراد حذفه");
+									}else{
+										
+										if (confirm('هل تود حذف هذا القطاع لن يمكنك التراجع'))
+										{
+											var y = window.location.href + "/" + seccho + "/ajax_load_branches_by_sector_id/";
+											var xhttp = new XMLHttpRequest();
+											
+											xhttp.onreadystatechange = function() {
+											
+											if (this.readyState == 4 && this.status == 200) {
+											var  RespObj = JSON.parse(this.responseText);
+												if (RespObj.length>0){
+													
+													alert ("لا يمكن مسح قطاع له فروع وتمركزات قم بنقلها لقطاع اخر او مسحها واعد المحاولة");	
+													
+												}else{
+													
+													///branche/{branche}/ajax_delete_sector
+													document.getElementById("frm_add_edit").action="/branche/"+seccho+"/ajax_delete_sector" ;
+													document.getElementById("frm_method").value="delete" ;
+													document.getElementById("frm_sector_id").value=seccho ;
+													SendForm('frm_add_edit' ,'LoadSectors');
+													
+												}
+												
+												
+											}
+											
+											}
+											
+											xhttp.open("GET", y, true);
+											xhttp.send(); 
+										
+										}
+									}
+
+
+
+					 }
 				// document.getElementById("model_display").value = yyy[yyy.selectedIndex].value;
 				//alert ("here");
 				
@@ -464,8 +547,8 @@ function LoadBranches() {
 		cell1.innerHTML = RespObj[x].address;
 		cell2.innerHTML = RespObj[x].has_building; 
 		cell3.innerHTML = RespObj[x].branch_name; 
-		cell4.innerHTML = RespObj[x].id; 
-		
+		cell4.innerHTML = RespObj[x].id ; 
+		//RespObj[x].id
     
 	//  addOption ("sector",RespObj[x].id,RespObj[x].name ,false);
 	} 
